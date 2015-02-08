@@ -1,0 +1,90 @@
+- style:
+    graph:
+      rankdir: LR
+    node:
+      shape: folder
+    edge:
+      fontsize: "10"
+      margin: "5"
+- name: "New Issue"
+  attrs:
+    shape: underline
+  out: 
+    - {node: "Inbox", label: "by(non-Product)"}
+    - {node: "Backlog", label: "by(Product/Lead)"}
+- name: "Inbox"
+  out:
+    - {node: "mtg - Triage", label: "on(weekly)"}
+
+- name: mtg - Triage
+  attrs: {shape: parallelogram}
+  out:
+    - node: Sprint 20XX.n
+      label: on(in plan)\nby(PM)
+    - node: Backlog
+      label: on(?)
+- name: "/empty/"
+  out:
+    - node: Sprint 20XX.n
+      label: on(in plan)\nby(PM)
+- name: Sprint 20XX.n
+  attrs: { shape: cds }
+  out:
+    - node: Sprint 20XX.n+1
+      label: if(incomplete, work continues)
+    - node: mtg - In Or Out
+      label: if(expected to complete with > confidence)
+- name: mtg - In Or Out
+  attrs: {shape: parallelogram}
+  out:
+    - node: RC
+      label: if(confident)\nby(lead or dev)
+- name: RC
+  out: 
+    - node: Staging
+      label: by(release mgr)
+- name: Staging
+  out: 
+    - node: Production
+      label: by(release mgr)
+- name: Sprint 20XX.n+1
+  attrs: { shape: cds }
+  out: 
+    - node: mtg - In Or Out
+    - node: Sprint 20XX.n+1
+      label: etc...
+- name: "Release 20XX..."
+- name: "Graveyard"
+- name: Backlog
+  attrs:
+    shape: cds
+  out: ["/empty/"]
+- name: "Fast track"
+  attrs: {shape: underline}
+  out: 
+    - node: RC
+      label: by(lead or dev)
+    - node: Staging Patch
+      label: by(lead or dev)\nif(urgent)
+    - node: Production Patch
+      label: by(lead)\nif(critical)
+- name: Staging Patch
+  out: 
+    - node: Production
+      label: by(release mgr)
+- name: Production Patch
+  out: 
+    - node: Release 20XX...
+      label: by(PM)
+- name: Production
+  out: 
+    - node: Release 20XX...
+      label: by(PM)
+- name: "*"
+  attrs:
+    shape: circle
+  out:
+    - node: "Graveyard"
+      label: "forever: lost,\nforgotten,\netc"
+    - node: Backlog
+      label: on(descoped)\nby(PM or lead)

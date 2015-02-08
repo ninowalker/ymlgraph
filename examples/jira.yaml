@@ -1,0 +1,68 @@
+- style:
+    node:
+      shape: box
+    edge:
+      fontsize: "10"
+- subgraph: Planning
+  nodes:
+  - Open
+  - Hold
+- subgraph: Development
+  nodes:
+  - In Progress
+  - Attn RM
+  - Merged
+- subgraph: Verification
+  nodes:
+  - Ready for Testing
+  - Test Failed
+- subgraph: Delivered
+  nodes:
+  - Resolved
+  - Closed
+- name: "*"
+  out: [{node: Hold, label: "descoped/deferred"}]
+- name: Open
+  attrs:
+    shape: circle
+  out: 
+    - node: In Progress
+      label: on(start of work)\nby(you)
+- name: In Progress
+  out: 
+    - node: Attn RM
+      label: on(ready for review)\nby(you)
+- name: Attn RM
+  out:
+    - node: Merged
+      label: on(pull merged)\nby(lead)
+    - node: In Progress
+      label: on(significant feedback)\nby(lead)
+    - node: Attn RM
+      label: on(minor feedback)
+- name: Merged
+  out:
+    - node: Ready for Testing
+      label: on(code deployed)\nby(you)
+- name: Ready for Testing
+  out:
+    - node: Resolved
+      label: by(QA)
+    - node: Resolved
+      label: by(you)\nif(technical test)
+    - node: Resolved
+      label: by(you)\nif(simple to verify & < risk)
+- name: Resolved
+  out:
+    - node: Closed
+      label: by(PM)
+- name: Test Failed
+  in:
+    - node: Ready for Testing
+      label: by(QA)
+  out:
+    - node: In Progress
+      label: by(you)
+- name: Closed
+  attrs:
+    shape: circle
