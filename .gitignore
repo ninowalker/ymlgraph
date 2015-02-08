@@ -52,3 +52,8 @@ docs/_build/
 
 # PyBuilder
 target/
+.pyenv
+env
+.DS_Store
+*.gv
+*.pdf
